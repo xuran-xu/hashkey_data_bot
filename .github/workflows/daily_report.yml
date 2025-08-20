@@ -1,0 +1,33 @@
+# .github/workflows/daily_report.yml
+
+name: Daily Data Report
+
+on:
+  workflow_dispatch: # 允许手动触发
+  schedule:
+    - cron: '30 0 * * *' # 北京时间 (UTC+8) 早上 8:30
+
+jobs:
+  run-script:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+      - name: Set up Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: '3.10' # 您可以根据需要更改 Python 版本
+
+      - name: Install dependencies
+        run: |
+          python -m pip install --upgrade pip
+          if [ -f requirements.txt ]; then pip install -r requirements.txt; fi
+
+      - name: Run Python script
+        env:
+          WEBHOOK_ASSET: ${{ secrets.WEBHOOK_ASSET }}
+          WEBHOOK_PROJECT: ${{ secrets.WEBHOOK_PROJECT }}
+          ETH_RPC_URL: ${{ secrets.ETH_RPC_URL }}
+          HSK_RPC_URL: ${{ secrets.HSK_RPC_URL }}
+        run: python lark.py 
