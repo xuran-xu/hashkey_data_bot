@@ -3,7 +3,6 @@ name: Daily Data Report
 on:
   workflow_dispatch: # 允许手动触发
   schedule:
-    - cron: '*/5 * * * *' # 临时探针：每 5 分钟一次
     - cron: '30 0 * * *'  # 北京时间 (UTC+8) 早上 8:30
 
 jobs:
