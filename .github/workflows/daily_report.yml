@@ -1,11 +1,10 @@
-# .github/workflows/daily_report.yml
-
 name: Daily Data Report
 
 on:
   workflow_dispatch: # 允许手动触发
   schedule:
-    - cron: '30 0 * * *' # 北京时间 (UTC+8) 早上 8:30
+    - cron: '*/5 * * * *' # 临时探针：每 5 分钟一次
+    - cron: '30 0 * * *'  # 北京时间 (UTC+8) 早上 8:30
 
 jobs:
   run-script:
@@ -13,6 +12,11 @@ jobs:
     steps:
       - name: Checkout repository
         uses: actions/checkout@v4
+
+      - name: Print time (UTC & Beijing)
+        run: |
+          echo "UTC now: $(date -u +"%Y-%m-%d %H:%M:%S")"
+          echo "Beijing now: $(TZ=Asia/Shanghai date +"%Y-%m-%d %H:%M:%S")"
 
       - name: Set up Python
         uses: actions/setup-python@v5
@@ -30,4 +34,4 @@ jobs:
           WEBHOOK_PROJECT: ${{ secrets.WEBHOOK_PROJECT }}
           ETH_RPC_URL: ${{ secrets.ETH_RPC_URL }}
           HSK_RPC_URL: ${{ secrets.HSK_RPC_URL }}
-        run: python lark.py 
+        run: python lark.py
